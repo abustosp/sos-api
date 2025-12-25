@@ -28,6 +28,21 @@ def login_usuario(credenciales:str = "bin/Login.json"):
   with open('response.json', 'w') as f:
     json.dump(response.json(), f, indent=4)
 
+  # Exportar los datos de login a CSV
+  response_data = response.json()
+  with open('login_usuario.csv', 'w', newline='', encoding='utf-8') as csvfile:
+    fieldnames = ['jwt', 'usuario', 'nombre', 'apellido', 'email', 'cantidad_cuits']
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter='|')
+    writer.writeheader()
+    writer.writerow({
+      'jwt': response_data.get('jwt', ''),
+      'usuario': response_data.get('usuario', ''),
+      'nombre': response_data.get('nombre', ''),
+      'apellido': response_data.get('apellido', ''),
+      'email': response_data.get('email', ''),
+      'cantidad_cuits': len(response_data.get('cuits', []))
+    })
+
   return response.json(), response.json()['jwt'] , payload , headers
 
 
@@ -126,4 +141,4 @@ def consulta_f2002():
 
 if __name__=="__main__":
   login_cuit()
-  consulta_f2002()
+  #consulta_f2002()
